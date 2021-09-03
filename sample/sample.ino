@@ -1,3 +1,5 @@
+/* TODO: Serial.Read()で圧力とポートを変更できるようにする
+*/
 
 #include "AD5328_1.h"
 
@@ -6,43 +8,37 @@ int cs2 = 9;
 AD5328 ad5328_1(cs1);
 AD5328 ad5328_2(cs2);
 
-float pres_MPa = 0.0;
-float pres_bar = 0.0;
-float V_amplofier = 0.0;
-float V_DAC = 0.0;
-float V_DAC_bit = 0.0;
+float pres_MPa = 0.0; // 0~0.8MPA
+int valve_port = 0;   // 0~15
 
-int port = 0;
-
-void valve(float pes_MPa, int port);
+void Valve(float pres_MPa, int valve_port);
 
 void setup() {
   Serial.begin(9600);
   ad5328_1.begin();
   ad5328_2.begin();
+
+  Serial.print(valve_port);
+  Serial.print(" -> ");
+  Serial.println(pres_MPa);
 }
 
 void loop() {
-  /*if (Serial.available()) {
-    pres_MPa = float(Serial.read());
-    port = int(Serial.read());
-  }*/
-  
-  valve(pres_MPa, port);
+  Valve(pres_MPa, valve_port);
 }
 
-void valve(float pes_MPa, int port) {
-  float pres_bar = 0.0;
+void Valve(float pres_MPa, int valve_port) {
+  float pres_bar    = 0.0;
   float V_amplifier = 0.0;
-  float V_DAC = 0.0;
-  float V_DAC_bit = 0.0;
+  float V_DAC       = 0.0;
+  float V_DAC_bit   = 0.0;
 
   pres_bar = pres_MPa * 10.0;
   V_amplifier = pres_bar / 8.0 * 10.0;
-  V_DAC = V_amplifier / 2.0; // Gain = 1 + R1 / R2, R1 = R2 = 10kΩ
+  V_DAC = V_amplifier / 2.0;        // Gain = 1 + R1 / R2, R1 = R2 = 10kΩ
   V_DAC_bit = V_DAC * 4096.0 / 5.0; // V_DAC = V_ref * V_DAC_bit / 2^N , V_ref = 5V, N = 12bit(分解能)
 
-  switch (port) {
+  switch (valve_port) {
     case 0:
       ad5328_1.write(DAC_A, V_DAC_bit);
       break;
@@ -106,10 +102,5 @@ void valve(float pes_MPa, int port) {
     case 15:
       ad5328_2.write(DAC_H, V_DAC_bit);
       break;
-
   }
-  Serial.print(port);
-  Serial.print(" -> ");
-  Serial.println(pres_MPa);
-
 }

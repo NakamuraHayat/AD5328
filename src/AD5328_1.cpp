@@ -2,8 +2,8 @@
 #include "SPI.h"
 #include "AD5328_1.h"
 
-AD5328::AD5328(int pin) {
-	cs = pin;
+AD5328::AD5328(int cs_pin) {
+	cs = cs_pin;
 }
 
 void AD5328::begin()

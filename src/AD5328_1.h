@@ -10,8 +10,6 @@
 #define AD5328_DAC_G 0b0110 << 12
 #define AD5328_DAC_H 0b0111 << 12
 
-//#define FREQUENCY 30000000 // (30MHz)これ以上大きくはできない
-
 typedef enum
 {
 	DAC_A = AD5328_DAC_A,
@@ -27,12 +25,11 @@ typedef enum
 class AD5328
 {
 public:
-	AD5328(int pin);
+	AD5328(int cs_pin);
 	void begin();
 	void write(DAC_t DAC, int V_out_bit); // 動かすDAC(DAC_A～DAC_H)と出力(0～4096)を入力
 
 private:
-	//int frequency = FREQUENCY;
 	int cs = SS;
 
 	void set();
