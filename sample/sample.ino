@@ -18,13 +18,15 @@ void setup() {
   ad5328_1.begin();
   ad5328_2.begin();
 
+  Valve(pres_MPa, valve_port);
+
   Serial.print(valve_port);
   Serial.print(" -> ");
   Serial.println(pres_MPa);
 }
 
 void loop() {
-  Valve(pres_MPa, valve_port);
+  
 }
 
 void Valve(float pres_MPa, int valve_port) {
