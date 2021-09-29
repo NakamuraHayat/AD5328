@@ -1,6 +1,4 @@
-﻿#include "Arduino.h"
-#include "SPI.h"
-#include "AD5328_1.h"
+﻿#include "AD5328_NH.h"
 
 AD5328::AD5328(int cs_pin) {
 	cs = cs_pin;
@@ -31,10 +29,10 @@ void AD5328::reset() {
 	SPI.endTransaction();
 }
 
-void AD5328::write(DAC_t DAC, int V_out_bit) {
+void AD5328::write(DAC_t dac, int v_out_bit) {
 	SPI.beginTransaction(SPISettings(30000000, MSBFIRST, SPI_MODE1));
 	digitalWrite(cs, LOW);
-	SPI.transfer16(DAC | V_out_bit); // 出力
+	SPI.transfer16(dac | v_out_bit); // 出力
 	digitalWrite(cs, HIGH);
 	SPI.endTransaction();
 }
